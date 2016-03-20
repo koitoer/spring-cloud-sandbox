@@ -1,0 +1,10 @@
+---
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/koitoer/spring-cloud-sandbox
+          searchPaths: config*
+server:
+  port: 8001
