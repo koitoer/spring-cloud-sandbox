@@ -1,0 +1,10 @@
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8001/eureka/    #Eureka server port to contact
+
+words: I,You,He,She,It
+
+server:
+  port: ${PORT:${SERVER_PORT:0}}  #Raise the app in a random port

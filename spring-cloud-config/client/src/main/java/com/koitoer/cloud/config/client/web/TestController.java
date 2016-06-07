@@ -1,12 +1,15 @@
 package com.koitoer.cloud.config.client.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,10 +21,38 @@ public class TestController {
     @Value("${datasourceName}")
     private String databaseName;
 
+    @Value("${words}")
+    private String words;
+
+    @Autowired
+    private DiscoveryClient client;
+
     @RequestMapping(value = "/database", method = RequestMethod.GET)
     public String getDatabaseName() {
         return "The database Config name is " + databaseName;
     }
 
+    @RequestMapping("/")
+    public @ResponseBody
+    String getWord() {
+        String[] wordArray = words.split(",");
+        int i = (int)Math.round(Math.random() * (wordArray.length - 1));
+        return wordArray[i];
+    }
 
+    @RequestMapping("/sentence")
+    public @ResponseBody String getSentence() {
+        return getWord("KOITOERCLIENT") +".";
+    }
+
+    public String getWord(String service) {
+        List<ServiceInstance> list = client.getInstances(service);
+        if (list != null && list.size() > 0 ) {
+            URI uri = list.get(0).getUri();
+            if (uri !=null ) {
+                return (new RestTemplate()).getForObject(uri,String.class);
+            }
+        }
+        return null;
+    }
 }
