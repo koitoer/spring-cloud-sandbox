@@ -1,0 +1,35 @@
+Client-side load balancer select with server we are going to call. No server side.
+  Load Balancing should be set based on simple criteria or sophisticating mechanism of service time response
+  Will be part of client
+  load balancer in the server will be in place as well.
+  
+Some unavailable, other could be slower or further than other in other regions could be.
+
+Ribbon - Other part of OSS family
+  Client side load balancer
+  Automatically integrate with service discovery (EUREKA)
+  Built in failure resiliency
+  Cching and Batching
+  Multiple protocols.
+  
+--List of services
+Services that we could call.
+Static
+  Populate via configuration
+     client-ids:
+      ribbon:
+        listOfservers: store1.com, store2.com
+Dynamic
+  Made using eureka
+  
+--Filtering the list of services
+  Eureka filter only using by zone
+
+--Ping
+  Delegate to Eureka to determine is service is up or down
+  
+ZoneAwareLoadBalancer
+ZoneAvoidanceRule
+
+@LoadBalancer
+loadbalancer.choose("client-id") <-- from eureka or static list.
