@@ -1,0 +1,20 @@
+Allows you to call REST services with no implementation code.
+Alternative to RestTemplate
+
+Java interfaces for your REST client code.
+Methods signatures for the rest call that you want to make.
+Annotate with @Feign annotation
+Spring cloud automatically implementes code to the rest
+
+@FeignClient (url = "localhost:8080/base")  <--base or eureka client-id
+public interface BaseClient
+
+@RequestMapping(method, value)
+List<Item> getItems();
+
+@RequestMapping(method, value, consumes)
+void updateItems(@PathVariable("sku") Long sku, @RequestBody Item item)
+
+In the SpringApplication need to enable @EnableFeignClients, spring implemented proxy.
+Ribbon automatically applies load balancing, so 
+
