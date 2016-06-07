@@ -3,8 +3,13 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8001/eureka/    #Eureka server port to contact
+  instance:
+      metadataMap:
+        instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+            ##Check different instances for the same application
 
 words: I,You,He,She,It
 
 server:
   port: ${PORT:${SERVER_PORT:0}}  #Raise the app in a random port
+

@@ -1,9 +1,13 @@
 package com.koitoer.cloud.config.client.web;
 
+import com.koitoer.cloud.config.client.Application;
+import com.koitoer.cloud.config.client.feign.ServiceBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -27,6 +31,12 @@ public class TestController {
     @Autowired
     private DiscoveryClient client;
 
+    @Autowired
+    LoadBalancerClient loadBalancer;
+
+    @Autowired
+    private ServiceBase serviceBase;
+
     @RequestMapping(value = "/database", method = RequestMethod.GET)
     public String getDatabaseName() {
         return "The database Config name is " + databaseName;
@@ -40,9 +50,9 @@ public class TestController {
         return wordArray[i];
     }
 
-    @RequestMapping("/sentence")
+    @RequestMapping(value = "/sentence", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody String getSentence() {
-        return getWord("KOITOERCLIENT") +".";
+        return getWord3("KOITOERCLIENT") +".";
     }
 
     public String getWord(String service) {
@@ -55,4 +65,22 @@ public class TestController {
         }
         return null;
     }
+
+    public String getWord3(String service) {
+        List<ServiceInstance> list = client.getInstances(service);
+        if (list != null && list.size() > 0 ) {
+            URI uri = list.get(0).getUri();
+            if (uri !=null ) {
+                return serviceBase.getWord().getString();
+            }
+        }
+        return null;
+    }
+
+    public String getWordRibbon(String service) {
+        ServiceInstance instance = loadBalancer.choose(service);
+        return (new RestTemplate()).getForObject(instance.getUri(),String.class);
+    }
+
+
 }
