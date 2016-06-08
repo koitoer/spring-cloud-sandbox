@@ -2,6 +2,9 @@ package com.koitoer.cloud.config.client.web;
 
 import com.koitoer.cloud.config.client.Application;
 import com.koitoer.cloud.config.client.feign.ServiceBase;
+import com.koitoer.cloud.config.client.service.Service;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +41,9 @@ public class TestController {
     @Autowired
     private ServiceBase serviceBase;
 
+    @Autowired
+    private Service service;
+
     @RequestMapping(value = "/database", method = RequestMethod.GET)
     public String getDatabaseName() {
         return "The database Config name is " + databaseName;
@@ -55,6 +62,17 @@ public class TestController {
         return getWord3("KOITOERCLIENT") +".";
     }
 
+
+    @RequestMapping(value = "/sentence2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String getSentence2() throws Exception {
+        Map<String, Object> param = new HashMap<>();
+        param.put("client-id", "KOITOERLCIENT");
+        return ((String)service.getWordHystrix(param)).toLowerCase() +".";
+    }
+
+
+
+
     public String getWord(String service) {
         List<ServiceInstance> list = client.getInstances(service);
         if (list != null && list.size() > 0 ) {
@@ -65,6 +83,7 @@ public class TestController {
         }
         return null;
     }
+
 
     public String getWord3(String service) {
         List<ServiceInstance> list = client.getInstances(service);
@@ -77,6 +96,7 @@ public class TestController {
         }
         return null;
     }
+
 
     public String getWordRibbon(String service) {
         ServiceInstance instance = loadBalancer.choose(service);
