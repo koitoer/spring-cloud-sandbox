@@ -1,0 +1,25 @@
+Dynamic configuration updates.
+  Traditional approach is bounce all the instances. So they can repeat the startup process.
+  1. Periodically will pull the config asking for instances
+  2. Push the configuration to the servers, from the config server
+  
+Spring Bus
+  Based in messaging technology is AMPQ
+  Broadcast configuration for the clients.
+  Publish messages to the broker, and clients became clients for the messages.
+  
+  dependency in SERVER AND CLIENT
+    spring-cloud-starter-bus-amqp
+  Need rabbitmq as the broker, in localhost you dont need to make any change
+  
+  1. Changes
+  2. POST /bus/refresh to execute the changes
+  3. Broker ensure message delivery to the client
+  4. Client take that and refresh itself
+      Actuator provides refresh endpoint !! spring-boot-actuator
+        @ConfigurationProperties(prefix="") in the yml, with relax binding
+        @RefreshScope -- additional to spring-cloud, reload bean without worry for dependant beans
+                      -- hot swapping, entire bean is reloaded
+                      -- makes the bean lazy - no configuration problems will be trigger until the first time bean is used
+                      -- use proxy pattern to refresh the bean and just dereference the old bean
+        Logging level
