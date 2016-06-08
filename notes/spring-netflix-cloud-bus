@@ -17,6 +17,9 @@ Spring Bus
   3. Broker ensure message delivery to the client
   4. Client take that and refresh itself
       Actuator provides refresh endpoint !! spring-boot-actuator
-        @ConfigurationProperties
-        @RefreshScope
+        @ConfigurationProperties(prefix="") in the yml, with relax binding
+        @RefreshScope -- additional to spring-cloud, reload bean without worry for dependant beans
+                      -- hot swapping, entire bean is reloaded
+                      -- makes the bean lazy - no configuration problems will be trigger until the first time bean is used
+                      -- use proxy pattern to refresh the bean and just dereference the old bean
         Logging level
