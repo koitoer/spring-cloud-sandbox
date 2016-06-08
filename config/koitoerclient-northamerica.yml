@@ -1,5 +1,5 @@
 ---
-datasourceName: oracleJNDI
+datasourceName: oracleJNDI2
 configuration.datasource: oracle
-wordConfig.luckyWord: worldLucky
+wordConfig.luckyWord: worldLucky2
 wordConfig.preamble: Hola
