@@ -1,0 +1,35 @@
+Cascading Failures:
+  If one of the microservices are down, and it is a dependency of other one, we could affect multiple services.
+  Single fail service can also be affected, disabling more services.
+  In distribuited systems we have more opprontunity for failure
+
+Circuit breaker pattern.
+  Prevent cascade failures
+  
+Hystrix
+  Part of netflix OSS
+  Easy to use by spring-cloud
+  detect failure conditions and open the circuit to disallow further calls, (20 failures in 5 seconds)
+  Identify fallback mechanism, we could have a try-catch and fallbacks can be chained.
+  Run one target service is unavailable
+  Reclose itself after the application became stable again (5 seconds)
+  Failure definition flexible (Exception thrown or timeout exceeded over time period)
+  
+Dependency spring-cloud-starter-hystrix
+@EnableHystrix
+@HystrixCommand(fallbackMethod = "defaultStores")
+@HystrixCommand(fallbackMethod
+                commandProperties ( @HystrixProperty ... circuitBreaker.errorThresholdPercentage -- % of request failed
+                                                         circuiteBreaker.sleepWindowInMilliseconds -- wait before close the breaker
+                                                         circuiteBreaker.requestVolumeThreshold --- # of request
+                                                         execution.isolation.thread.timeoutMiliseconds -- expected time
+                                                         circuitBreaker.forceClosed -- manually force the close 
+
+Synchronously .. default
+Asynchronously . Return a Future, just like @Async
+  @HystrixCommand()
+  public Future<Store> methodName(Map<String, Object> params)
+  
+Reactively ..... Suscribe, get a listener (Observable)
+  @HystrixCommand()
+  public Observable<Store> methodName(Map<String, Object> params)
