@@ -33,3 +33,12 @@ Asynchronously . Return a Future, just like @Async
 Reactively ..... Suscribe, get a listener (Observable)
   @HystrixCommand()
   public Observable<Store> methodName(Map<String, Object> params)
+
+Hystrix Dashboard.
+  Monitor the circuit breakers and how they are behaving, with little web interface.
+  Dependency spring-cloud-starter-hystrix-dashboard
+  @EnableHystrixDashboard
+  host:port/hystrix.stream
+  
+Monitoring using turbine.
+  Single hystrix dashboard, that listen and aggregate the stream for other hystrix 
