@@ -71,7 +71,8 @@ public class TestController {
         if (list != null && list.size() > 0 ) {
             URI uri = list.get(0).getUri();
             if (uri !=null ) {
-                return serviceBase.getWord().getString();
+
+                return serviceBase.getSentence();
             }
         }
         return null;
