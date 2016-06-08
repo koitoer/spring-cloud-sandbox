@@ -1,0 +1,42 @@
+API Gateway.
+  Fallacies of distribuited computing.
+  Accesing from public internet, will.  
+    Expose out internal API
+    Security 
+    CORS Required
+    Multiple Trips, multiple calls to generate a response
+    Different clients have different needs, client have specific needs to assemble the content. We need to adapt the content for client.
+
+API Gateway
+  Single point of contact, you will have deployed there the custom API, one point to protect, 
+  Consolidate the calls in just one
+  Can have some caching mechanism.
+  Facade to the real services, reduce the # of calls from the client, 
+  Routes call to specific services
+  Handled security
+  Protocol translation
+  Optimizes calls / Link expansion (HATEOAS)
+  
+Zuul
+  Part of Netflix.
+  Routing and Filtering
+  Can be used for many API Gateway needs.
+  Routing - send request to real server (Reverse Proxy) - --  Add a mapped url and redirect to the service_port
+  @EnableZuulProxy.
+  1. Register with eureka and collects all the client-ids  /subject to call subject service.
+     Calls are automatically load balancing
+     Calls are circuit breakers as weell
+     
+     zuul:
+      prefix:/api
+      ignored-services: verb (*)
+      routes:
+        subject:
+          path:/setence-subject/**
+        noun:
+          path:/nound/**
+  
+  Zull missing caching, protocol-translation, resource expansion/link resolution
+  
+  
+  
