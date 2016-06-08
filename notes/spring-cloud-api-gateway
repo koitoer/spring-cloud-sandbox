@@ -39,4 +39,30 @@ Zuul
   Zull missing caching, protocol-translation, resource expansion/link resolution
   
   
+======  Caching   =============
+
+Client Cache - automatic if we use some headers, expire headers and 
+Server Cache - 
+    API Gateway
+    Backend Service
+    Method Caching
+      Provide Caching Abstraction, we need to use @EnableCacheable
+      @Cacheable annotation, describe the cache and key [ @Cacheable(value = "inventory", key="#sku") ]
+      Use a cache manager - syncronizedMaps, Ehcache, Gemfire
+      Drawback, cache policy should ideally be considered and expriring
   
+  Etags
+    Client ask resources and the header comes with the etag, generate a hash
+    if-none-match, check the content and try to return the same, if it matches just send 304 if not 200 + content + etag
+    Purpose is save bandwitdh, but there is no reduction for server work, only economy in network activity
+    Shallow etags in server side
+      @Bean
+      public Filter shallowEtagHeaderFilter(){
+        return new ShallowEtagHeaderFilter();
+      }
+    Client side
+      CacheConfig cacheConfig = CacheConfig.custom().setMaxCacheEntries().setMaxObjectSize().build();
+      CloaseableHttpClient cachingClient =  CachingHttpClients.custom().setCacheConfig(cacheConfig).build();
+      RestTemplate template = new RestTemplate(new HttpComponenetsClientHttpRequestFactory(cachingClient));
+      Feign does not support caching capabilities
+      
