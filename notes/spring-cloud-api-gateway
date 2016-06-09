@@ -66,3 +66,43 @@ Server Cache -
       RestTemplate template = new RestTemplate(new HttpComponenetsClientHttpRequestFactory(cachingClient));
       Feign does not support caching capabilities
       
+      
+
+===== Resource expansion ========
+
+Resource Link Expansion is being implemented by HATEOAS (hypermedia as the engine of application state)
+Gateway will be undoing the HATEOS, our gateway do the call instead of the client who could be innefiecntly
+Option
+  Traverson, traversing link automatically, so you dont need to follow it as a matter of code
+             traversal not the expansion, limited capability with other formats, no support XML
+             you need to include spring-hateoas and json-path
+             1. Create Resources for you domain objects like.
+                  public class PlayerResources extends Resources<Resource<Player>>{}
+                  Traverson traverson = new Traverson(new URI(), MediTypes.HAL_JSON)
+                  PlayerResources players = traverson.follow($href,$href2).toObject(PlayerResources.class)
+                  Resource<Player> = players.getContent()
+  Resource Expansion Option
+      Spring Data Rest projection cause links to be inlined and expanded
+            1. Define an interface annotated like
+              @Projection(name=projectionName, types={Class.class})
+              Call http://host:port/app/1/?projection=projectionName
+            Drawbacks
+              Only works with spring DAta REST
+              Projection are limited to the same microservices.
+
+
+===== Protocol Translation ========
+
+Translate between front and back end protocols.
+  Like HTTP/REST - SOAP - JMS - AMPQ
+  We could have adpaters above the microservices
+  No quick fixes.
+    JmsTemplate
+    AmqpTemplate
+    WebServiceTemplate
+    
+    Spring Integration - enterprise integration patterns, via in memory messaging patterns.
+    Adapters and Gateways for several technologies. Convert payloads
+    Assemble prebuildt integration components, using messages
+    Thinking in terms of messages and payload as a API Gateway
+
