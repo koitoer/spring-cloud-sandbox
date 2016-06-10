@@ -1,3 +1,4 @@
+Declarative REST client
 Allows you to call REST services with no implementation code.
 Alternative to RestTemplate
 
