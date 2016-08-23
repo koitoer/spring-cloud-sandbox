@@ -1,0 +1,128 @@
+Spring Cloud.
+
+Very easy acces to the netflix libraries.
+Based on spring cloud.
+org.springframework.cloud.
+Parent POM is spring-cloud-starter-parent
+Dependency is spring-cloud-starter-... {eureka, eureka-server}
+Dependencyy management section could use if project have already a parent.
+Addresses common pattern sin distribuited computing.
+Based on spring Boot and easy to use with netflix libraries.
+
+Spring Cloud Config.
+Provides centralized, externalized, secured, easy-to-reach source of application configuration
+Centralized, versioned configuration management for distribuited applications
+Sometimes the applicationes need connection to resources or other applications, normally we use external configuration
+1. Externalize the configuration and packages with the application, but requires restart or even a rebuild.
+2. Configuration files in a common file system, sometimes resources not available in the cloud, ephemeral file systems.
+3. Environment vars, difficult to manage and different platforms.
+4. Cloud vendor specific solution, coupling with this specifications.
+
+In microservices we need to do all this several services, probably dynamic updates it is a good option but if not we have
+deployment activities for each service and version control
+
+Platform/cloud independent solution
+Centralized, discrete source rather than have thousand of sources
+Dynamic, change on the fly
+Contollable
+Passive, self register to this configuration, dont manage by us.
+
+CLient connect over HTTP and retrieve their configuration settings when their start, in addition of preexisting configurations
+
+Spring Cloud Config Server.
+1. POM
+2. Where is the location of configuration (.yml) look for individual files (.properties), yml have more precedence
+3. @EnableConfigServer
+
+Client Side
+spirng-cloud-stater-config
+Configuration properties to locate the server.
+
+EnvironmentRepository used GIT or locale files.
+- Configuration based on naming convention as it follows.
+   <spring.app.name>-<profile>.yml
+   bootstrap.yml 
+	spring.application.name
+	spring.profile
+- Client obtain from the server
+	http://<server>:<port>/<spring.application.name>/<profile>
+
+#.properties file
+spring.config.name = aa
+
+#.yml  (can support several profiles in the same yml) 
+---
+spring:
+  config:
+    name: aaa
+
+---
+spring:
+  profiles: east
+
+
+Environments-PropertySources
+Recommended to run on several instances behind ELB.
+spring.cloud.config.failFast=true (default is false) // Client finish initialization
+
+----------------------------------------------------------------------
+
+
+Spring Cloud netflix eureka
+Service discovery, allows applications to register themselve
+Passive service discovery
+Service Discovery provides a single lookup services, looking for runtime dependencies or other services
+Clients register themselves, with this they discover the registratns
+Euroke, consul, zookeeper, smart
+Eureka provides lookup server, running in multiple servers, replicate state of registered services
+Eureka keeps all the information in the memory, not persist on a database.
+Relies on client registration, stateful application
+
+Client.
+	Provide metadata on host, port, health, url. in the registration process
+	Send heartbeats to Eureka, remove those who dont contact Eureka.
+	1. spring-cloud-starter-eureka-server --- @EnableDiscoveryClient
+	2. eureka.client.serviceUrl.defaultZone: http://server:8761/eureka
+	3. spring.application.name = EUREKA-VIP
+	3. @Autowired DiscoveryClient client;
+			client.getInstances("EUREKA-VIP") <-- application name of another service
+
+Server.
+	1. spring-cloud-starter-eureka-server --- @EnableEurekaServer
+	2. configuration for eureka server
+		server:
+		  port:8011
+		eureka:
+		  instance:
+		    statusPageUrlPath: ${management.contextPath}/info
+		    healthCheckUrlPath: ${management.contextPath}/health
+ 		    hostname: localhost
+          	  client:  <-- because it talks with other eureka servers
+		    registerWithEureka: false  <-- register server with other servers
+		    fetchRegistry: false
+		    serviceUrl:
+			defaultZone: http://server:port/eureka, http://server:port/eureka <-- where connect
+			--Should run in multiple servers, communicate with other to share the state
+
+Config .. .... Eureka
+Config first bootstrap (default).
+Config to locate Eureka
+spring.cloud.config.uri configured
+
+Eureka .. .... Config
+Eureka first bootstrap.
+Config server is another client for eureka
+spring.cloud.config.discovery.enabled=true
+eureka.client.serviceUrl.defaultZone, configured.
+Makes two trip.
+
+----------------------------------------
+
+
+Spring Cloud Bus
+Push changes out
+Provides simple way to notify clients to config changes
+
+
+Spring Cloud netflix eureka
+Service discovery, allows applications to register themselve
